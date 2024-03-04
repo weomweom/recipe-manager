@@ -27,7 +27,7 @@ const Nav = (/*props: NavLinks*/) => {
     ]
 
     return (
-        <ul className='flex items-center sticky z-10 top-0 space-x-3 px-5 h-16'>
+        <ul className='flex items-center sticky z-10 top-0 space-x-3 px-5 h-16 bg-gray-200'>
             <li><Link href='/'>logo</Link></li>
             {links.map(link => (
             <li key={link.href}>

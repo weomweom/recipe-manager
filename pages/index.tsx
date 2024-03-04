@@ -3,6 +3,6 @@ import Link from 'next/link'
 
 export default function Home() {
   return (
-    <div>hellou <Link href='/recipe'>Recipe</Link></div>
+    <div>hellou <Link href='/recipes'>Recipes</Link></div>
   )
 }
