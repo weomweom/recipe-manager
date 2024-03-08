@@ -1,9 +1,11 @@
 import React from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import Image from './Icons/Image';
 import Delete from './Icons/Delete';
 import Edit from './Icons/Edit';
+import Star from './Icons/Star';
 
 interface RecipeCardType {
     title: string,
@@ -33,18 +35,22 @@ const RecipeCard = (props: RecipeCardType) => {
 	}
 
 	return (
-		<div className='relative flex flex-col justify-between rounded-2xl p-5 bg-slate-100 min-h-[150px] gap-3'>
+		<div className='relative rounded-2xl bg-white min-h-[150px] overflow-hidden'>
 			{props.photo ? 
 				<img src={props.photo}/>
 				:
-				<div className='w-full h-[200px] flex justify-center items-center'><Image/></div>
+				<div className='w-full h-[200px] flex justify-center items-center bg-slate-200'><Image/></div>
 			}
-			<h2 className='font-medium text-3xl text-orange-400'>{props.title}</h2>
-			<p className='text-gray-500'>{props.description}</p>
-			<span className='w-min lowercase rounded-full py-0.5 px-2 bg-orange-300 text-xs text-gray-600 hover:text-gray-800 transition-colors'>{props.status}</span>
-			<div className='absolute flex gap-2 bg-white top-0 right-0 p-2 rounded-bl-xl rounded-tr-xl border-t-4 border-r-4 border-slate-100'>
-				<button onClick={() => deleteRecipe(props.id)}><Delete/></button>
-				<button onClick={() => editRecipe(props.id)}><Edit/></button>
+
+			<div className='flex flex-col items-start gap-3 p-5'>
+				<Link href={'/recipes/' + props.id} className='font-medium text-3xl text-orange-400'>{props.title}</Link>
+				<p className='text-gray-500'>{props.description}</p>
+				<span className={`${props.status === 'NONE' ? 'bg-gray-200' : 'bg-orange-300'} inline lowercase rounded-full py-0.5 px-2  text-xs text-gray-600 hover:text-gray-800 transition-colors`}>{props.status !== 'NONE' ? props.status : 'no tags'}</span>
+				<div className='absolute flex gap-2 bg-white top-0 right-0 p-2 rounded-bl-xl border-slate-100'>
+					<button onClick={() => deleteRecipe(props.id)}><Delete/></button>
+					<button onClick={() => editRecipe(props.id)}><Edit/></button>
+					<button><Star/></button>
+				</div>			
 			</div>
 		</div>
 	)

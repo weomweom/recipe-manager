@@ -7,7 +7,7 @@ import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
 import "easymde/dist/easymde.min.css";
 import { useRouter } from 'next/router';
-
+ 
 interface FormProps {
     title: string;
     description: string;
@@ -42,7 +42,7 @@ function RecipeForm() {
     return (
 <>
 <form 
-        className='max-w-lg space-y-3 flex flex-col mx-auto' 
+        className='max-w-lg flex flex-col gap-4 mx-auto' 
         onSubmit={handleSubmit(async (data) => {
             try {
                 await axios.post('/api/recipes', data);
@@ -52,15 +52,19 @@ function RecipeForm() {
             }
         })}>
             <TextField.Root>
-                <TextField.Input placeholder="Banana pancakes" {...register('title')}/>
+                <label className='font-bold'>Title</label>
+                <TextField.Input placeholder="Banana pancakes" {...register('title')} className='w-full border-2 rounded-md pl-1'/>
             </TextField.Root>
-            <select {...register('status')}>
-                {options.map((item) => (
-                <option key={item.value} value={item.value}>
-                    {item.label}
-                </option>
-                ))}
-            </select>
+            <div>
+                <label className='block font-bold'>Meal type</label>
+                <select {...register('status')} className='border-2 rounded-md w-full'>
+                    {options.map((item) => (
+                    <option key={item.value} value={item.value}>
+                        {item.label}
+                    </option>
+                    ))}
+                </select>
+            </div>
             <Controller
                 name='description'
                 control={control}
