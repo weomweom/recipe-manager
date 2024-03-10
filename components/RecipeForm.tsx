@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { TextField, Button } from '@radix-ui/themes';
 import SimpleMDE from "react-simplemde-editor";
 import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
-import "easymde/dist/easymde.min.css";
 import { useRouter } from 'next/router';
+import "easymde/dist/easymde.min.css";
+import styled from 'styled-components';
+import { StyledButton } from './StyledComponents';
  
 interface FormProps {
     title: string;
@@ -15,6 +17,12 @@ interface FormProps {
     ingredients: string;
     status: string;
 }
+
+const StyledLabel = styled.label`
+    font-weight: 700;
+    display: block;
+    padding-top: 10px;
+`
 
 function RecipeForm() {
     const options = [
@@ -42,7 +50,7 @@ function RecipeForm() {
     return (
 <>
 <form 
-        className='max-w-lg flex flex-col gap-4 mx-auto' 
+        className='max-w-lg flex flex-col mx-auto' 
         onSubmit={handleSubmit(async (data) => {
             try {
                 await axios.post('/api/recipes', data);
@@ -52,11 +60,12 @@ function RecipeForm() {
             }
         })}>
             <TextField.Root>
-                <label className='font-bold'>Title</label>
+                <StyledLabel>Title</StyledLabel>
                 <TextField.Input placeholder="Banana pancakes" {...register('title')} className='w-full border-2 rounded-md pl-1'/>
             </TextField.Root>
+
             <div>
-                <label className='block font-bold'>Meal type</label>
+                <StyledLabel>Meal type</StyledLabel>
                 <select {...register('status')} className='border-2 rounded-md w-full'>
                     {options.map((item) => (
                     <option key={item.value} value={item.value}>
@@ -65,28 +74,28 @@ function RecipeForm() {
                     ))}
                 </select>
             </div>
+
+            <StyledLabel>Description</StyledLabel>
             <Controller
                 name='description'
                 control={control}
                 render={({ field }) => <SimpleMDE placeholder='Description' {...field}/>}
             />
+
+            <StyledLabel>Recipe</StyledLabel>
             <Controller
                 name='recipe'
                 control={control}
-                defaultValue={'kotiata'}
                 render={({ field }) => <SimpleMDE placeholder='Reicpe' {...field}/>}
             />
+
+            <StyledLabel>Ingredients</StyledLabel>
             <Controller
                 name='ingredients'
                 control={control}
                 render={({ field }) => <SimpleMDE placeholder='Ingredients' {...field}/>}
             />
-            <div className='self-center'>
-                <Button className='hover:cursor-pointer'>Save recipe</Button>
-            </div>
-        </form>
-
-        <form>
+            <StyledButton>Save recipe</StyledButton>
         </form>
 </>
     );
