@@ -1,11 +1,8 @@
 'use client';
 
-import React from 'react';
-import { TextField, Button } from '@radix-ui/themes';
+import React, { useEffect, useState } from 'react';
 import SimpleMDE from "react-simplemde-editor";
 import { useForm, Controller } from 'react-hook-form';
-import axios from 'axios';
-import { useRouter } from 'next/router';
 import "easymde/dist/easymde.min.css";
 import styled from 'styled-components';
 import { StyledButton } from './StyledComponents';
@@ -24,80 +21,106 @@ const StyledLabel = styled.label`
     padding-top: 10px;
 `
 
-function RecipeForm() {
-    const options = [
-        {
-            value: 'NONE',
-            label: 'None',
-        },
-        {
-            value: 'BREAKFAST',
-            label: 'Breakfast',
-        },
-        {
-            value: 'LUNCH',
-            label: 'Lunch',
-        },
-        {
-            value: 'DINNER',
-            label: 'Dinner',
-        }
-    ]
+const options = [
+    {
+        value: 'NONE',
+        label: 'None',
+    },
+    {
+        value: 'BREAKFAST',
+        label: 'Breakfast',
+    },
+    {
+        value: 'LUNCH',
+        label: 'Lunch',
+    },
+    {
+        value: 'DINNER',
+        label: 'Dinner',
+    }
+]
 
-    const router = useRouter();
-    const {register, control, handleSubmit} = useForm<FormProps>();
+function RecipeForm({onSubmit, updateData} : {
+    onSubmit: Function,
+    updateData?: any,
+}) {
+    const {register, control, handleSubmit, setValue} = useForm<FormProps>();
+
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    useEffect(() => {
+        if (updateData) {
+            setValue('title', updateData.title);
+            setValue('description', updateData.description);
+            setValue('recipe', updateData.recipe);
+            setValue('ingredients', updateData.ingredients);
+            setValue('status', updateData.status);
+        }
+        setIsLoaded(true);
+
+    }, [updateData]);
+
+    const handleFormSubmit = (data: FormProps) => {
+        onSubmit(data);
+    };
+
 
     return (
-<>
-<form 
-        className='max-w-lg flex flex-col mx-auto' 
-        onSubmit={handleSubmit(async (data) => {
-            try {
-                await axios.post('/api/recipes', data);
-                router.push('/recipes');
-            } catch (error) {
-                console.log(error)
-            }
-        })}>
-            <TextField.Root>
+        <>
+            {isLoaded && <form 
+                className='max-w-lg flex flex-col mx-auto' 
+                onSubmit={handleSubmit(handleFormSubmit)}>
                 <StyledLabel>Title</StyledLabel>
-                <TextField.Input placeholder="Banana pancakes" {...register('title')} className='w-full border-2 rounded-md pl-1'/>
-            </TextField.Root>
+                <input 
+                    {...register('title')}
+                    type="text" 
+                    placeholder="Title" 
+                    className='border-2 rounded-md w-full py-1 px-2'
+                />
 
-            <div>
                 <StyledLabel>Meal type</StyledLabel>
-                <select {...register('status')} className='border-2 rounded-md w-full'>
-                    {options.map((item) => (
-                    <option key={item.value} value={item.value}>
-                        {item.label}
-                    </option>
+                <select 
+                    {...register('status')} 
+                    className='border-2 rounded-md w-full py-1.5 px-1' >
+                        {options.map((item) => (
+                        <option key={item.value} value={item.value}>
+                            {item.label}
+                        </option>
                     ))}
                 </select>
-            </div>
 
-            <StyledLabel>Description</StyledLabel>
-            <Controller
-                name='description'
-                control={control}
-                render={({ field }) => <SimpleMDE placeholder='Description' {...field}/>}
-            />
+                <StyledLabel>Description</StyledLabel>
+                <textarea 
+                    {...register('description')} 
+                    placeholder="Description" 
+                    rows={6}
+                    className='border-2 rounded-md w-full py-1 px-2'
+                />
 
-            <StyledLabel>Recipe</StyledLabel>
-            <Controller
-                name='recipe'
-                control={control}
-                render={({ field }) => <SimpleMDE placeholder='Reicpe' {...field}/>}
-            />
+                <StyledLabel>Recipe</StyledLabel>
+                <Controller
+                    name='recipe'
+                    control={control}
+                    render={({ field }) => 
+                        <SimpleMDE 
+                            placeholder='Reicpe' 
+                            {...field} 
+                    />}
+                />
 
-            <StyledLabel>Ingredients</StyledLabel>
-            <Controller
-                name='ingredients'
-                control={control}
-                render={({ field }) => <SimpleMDE placeholder='Ingredients' {...field}/>}
-            />
-            <StyledButton>Save recipe</StyledButton>
-        </form>
-</>
+                <StyledLabel>Ingredients</StyledLabel>
+                <Controller
+                    name='ingredients'
+                    control={control}
+                    render={({ field }) => 
+                        <SimpleMDE 
+                            placeholder='Ingredients' 
+                            {...field} 
+                    />}
+                />
+                <StyledButton>Save recipe</StyledButton>
+            </form>} 
+        </>
     );
 }
 

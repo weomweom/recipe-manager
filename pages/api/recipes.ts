@@ -29,7 +29,6 @@ export default async function handler(
                 res.status(200).json(recipe)
             } else {
                 const recipes = await prisma.recipe.findMany(); 
-                res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
                 res.status(200).json(recipes);
             }
 
@@ -56,6 +55,41 @@ export default async function handler(
             console.error('Error creating recipe:', error);
             res.status(500).json({ error: 'Internal server error' });
         }
+    }
+
+    if (req.method === 'PUT') {
+        try{
+            const id = req.query?.id as string | undefined;
+            if (!id) {
+                throw new Error('ID parameter is missing');
+            }
+
+            const parsedId = parseInt(id);
+
+            if (isNaN(parsedId)) {
+                throw new Error('Invalid ID parameter');
+            }
+
+            const {title, description, status, recipe, ingredients} = req.body;
+
+            const updatedRecipe = await prisma.recipe.update({
+                where: {
+                    id: parsedId,
+                },
+                data: {
+                    title: title,
+                    description: description,
+                    status: status,
+                    recipe: recipe,
+                    ingredients: ingredients,
+                },
+            })
+            res.status(200).json(updatedRecipe);
+        } catch (error) {
+            console.error('Error updating recipe:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+
     }
 
     if(req.method === 'DELETE'){

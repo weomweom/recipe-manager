@@ -31,11 +31,9 @@ const Nav = (/*props: NavLinks*/) => {
             <li><Link href='/'>logo</Link></li>
             {links.map(link => (
             <li key={link.href}>
-                <Link 
-                    className={`${pathname === link.href ? 'text-orange-400 font-medium' : 'text-gray-500'} transition-all text-xl`} 
-                    href={link.href}>
+                    <Link href={link.href} className={`${link.href === '/' ? (pathname === '/' ? 'text-orange-400' : 'text-gray-500') : (pathname?.includes(link.href) ? 'text-orange-400' : 'text-gray-500')} transition-all text-xl`}>
                         {link.label}
-                </Link>
+                    </Link>
             </li>
             ))}
         </ul>

@@ -30,6 +30,11 @@ export const StyledReactMarkdown = styled(ReactMarkdown)<{ $textColor?: string; 
         color: ${props => props.theme.colors.main};
     }
 
+    a{
+        text-decoration: underline;
+        color: ${props => props.theme.colors.main};
+    }
+
     blockquote{
         quotes: auto;
         display: inline-block;
@@ -51,4 +56,10 @@ export const StyledButton = styled.button`
     border-radius: 40px;
     padding: 10px 15px;
     align-self: center;
+`
+
+export const StyledFormHeader = styled.h2`
+    text-align: center;
+    font-weight: 700;
+    font-size: 20px;
 `

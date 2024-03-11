@@ -2,34 +2,49 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import RecipeForm from "@/components/RecipeForm";
+import { StyledFormHeader } from "@/components/StyledComponents";
 
 function EditRecipePage() {
     const router = useRouter();
-    const { id } = router.query;
+    const id  = router.query.id;
 
-    const [recipeData, setRecipeData] = useState(
-        {
-            existingTitle: undefined,
-            existingDescription: undefined,
-            existingRecipe: undefined,
-            existingIngredients: undefined,
-        }
-    )
-    
+    const [recipe, setRecipe] = useState(null);
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    const fetchData = async () => {
+		try {
+			const response = await axios.get('/api/recipes?id=' + id);
+			if(response.status===200)
+            {
+				setRecipe(response.data);
+                setIsLoaded(true);
+            }
+			else console.log('Error fetching data:', response.statusText);
+		} catch (error) {
+			console.error('Error fetching data:', error);
+		}
+	};
+
     useEffect(() => {
-        axios.get('/api/recipes?id=' + id).then(res => {
-            const {title, description, recipe, ingredients} = res.data
-            setRecipeData({existingTitle:title, existingDescription:description, existingRecipe:recipe, existingIngredients:ingredients})
-        })
+        fetchData()
     }, [])
 
-    {console.log(recipeData)}
+    const handleSubmit = async (data: any) => {
+        try {
+            await axios.put(`/api/recipes?id=${id}`, data);
+            router.push('/recipes');
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
-        <div>
-            <h1>Edit recipe</h1>
-            <RecipeForm/>
-        </div>
+        <>
+            {isLoaded && <div>
+                <StyledFormHeader>Edit recipe</StyledFormHeader>
+                <RecipeForm onSubmit={handleSubmit} updateData={recipe}/>
+            </div>}
+        </>
     );
 }
 

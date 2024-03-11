@@ -6,7 +6,6 @@ import Image from './Icons/Image';
 import Delete from './Icons/Delete';
 import Edit from './Icons/Edit';
 import Star from './Icons/Star';
-import { StyledReactMarkdown } from './StyledComponents';
 
 interface RecipeCardType {
     title: string,
@@ -44,8 +43,8 @@ const RecipeCard = (props: RecipeCardType) => {
 			}
 
 			<div className='flex flex-col items-start gap-3 p-5'>
-				<Link href={'/recipes/' + props.id} className='font-medium text-3xl text-orange-400 underline' style={{overflowWrap: 'anywhere'}} >{props.title}</Link>
-				<StyledReactMarkdown $textColor="#6B7280">{props.description}</StyledReactMarkdown>
+				<Link href={'/recipes/' + props.id} className='font-medium text-3xl text-orange-400 underline' style={{overflowWrap: 'anywhere'}}>{props.title}</Link>
+				<p className='text-gray-500'>{props.description}</p>
 				<span className={`${props.status === 'NONE' ? 'bg-gray-200' : 'bg-orange-300'} inline lowercase rounded-full py-0.5 px-2  text-xs text-gray-600 hover:text-gray-800 transition-colors`}>{props.status !== 'NONE' ? props.status : 'no tags'}</span>
 				<div className='absolute flex gap-2 bg-white top-0 right-0 p-2 rounded-bl-xl border-slate-100'>
 					<button onClick={() => deleteRecipe(props.id)}><Delete/></button>
