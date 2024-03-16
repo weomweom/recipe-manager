@@ -64,8 +64,10 @@ function Recipe() {
     )
 
     useEffect(() => {
-        fetchData()
-    }, [])
+        if (id && id !== "") {
+            fetchData()
+        }
+    }, [id]);
     
     const fetchData = async () => {
 		try {
