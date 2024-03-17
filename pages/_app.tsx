@@ -1,24 +1,22 @@
-import type { Metadata } from 'next'
 import { AppProps } from 'next/app';
+import Head from 'next/head';
 import { ThemeProvider } from 'styled-components';
-import Nav from '@/components/Nav';
 import '../app/globals.css';
 import { myTheme } from '@/my-theme';
-
-export const metadata: Metadata = {
-  title: 'Recipe manager',
-  description: 'Recipe manager for recipe management',
-}
+import Layout from '@/components/Layout';
 
 export default function App({ Component, pageProps }: AppProps) {
 	return (
 		<ThemeProvider theme={myTheme}>
-			<div>
-				<Nav/>
-				<div className='p-6'>
-					<Component {...pageProps} />
-				</div>
-			</div>	
+			<Head>
+				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<title>Recipe manager</title>
+				<meta name="description" content="Recipe manager" />
+				<link rel="icon" href="/favicon.ico" />
+			</Head>
+			<Layout>
+				<Component {...pageProps} />
+			</Layout>
 		</ThemeProvider>
 
 	)
