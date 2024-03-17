@@ -89,7 +89,6 @@ export default async function handler(
             console.error('Error updating recipe:', error);
             res.status(500).json({ error: 'Internal server error' });
         }
-
     }
 
     if(req.method === 'DELETE'){

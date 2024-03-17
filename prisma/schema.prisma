@@ -31,6 +31,5 @@ enum Status {
 model Products {
   id        Int      @id @default(autoincrement())
   title     String   @db.VarChar(255)
-  amount    Int      @db.Int
   createdAt DateTime @default(now())
 }
