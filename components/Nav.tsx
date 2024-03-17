@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
+import { StyledNavigation, StyledNavLink } from './StyledComponents';
 /*
 interface NavLinks {
     links: {
@@ -23,20 +23,35 @@ const Nav = (/*props: NavLinks*/) => {
         {
             label: 'Recipes',
             href: '/recipes',
+        },
+        {
+            label: 'Products',
+            href: '/products',
+        },
+        {
+            label: 'Menu',
+            href: '/menu',
+        },
+        {
+            label: 'Shopping list',
+            href: '/shoppingList',
         }
     ]
 
     return (
-        <ul className='flex items-center sticky z-10 top-0 space-x-3 px-5 h-16 bg-gray-200'>
+        <StyledNavigation>
             <li><Link href='/'>logo</Link></li>
-            {links.map(link => (
-            <li key={link.href}>
-                    <Link href={link.href} className={`${link.href === '/' ? (pathname === '/' ? 'text-orange-400' : 'text-gray-500') : (pathname?.includes(link.href) ? 'text-orange-400' : 'text-gray-500')} transition-all text-xl`}>
-                        {link.label}
-                    </Link>
-            </li>
-            ))}
-        </ul>
+            <div className='flex gap-6'>
+                {links.map(link => (
+                <li key={link.href}>
+                        {link.href === '/' 
+                            ? <StyledNavLink href={link.href} $isActive={pathname !== null && pathname === (link.href)}>{link.label}</StyledNavLink>
+                            : <StyledNavLink href={link.href} $isActive={pathname !== null && pathname.includes(link.href)}>{link.label}</StyledNavLink>
+                        }
+                </li>
+                ))}
+            </div>
+        </StyledNavigation>
     )
 }
 

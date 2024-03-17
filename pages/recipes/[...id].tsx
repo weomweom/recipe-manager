@@ -1,54 +1,22 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import Image from "@/components/Icons/Image";
-import { StyledReactMarkdown } from '@/components/StyledComponents';
-import Delete from '@/components/Icons/Delete';
-import Star from '@/components/Icons/Star';
-import Edit from '@/components/Icons/Edit';
-
-const Title = styled.h2`
-    color: ${props => props.theme.colors.main};
-    font-weight: 500;
-    font-size: 40px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    overflow-wrap: anywhere;
-    width: 90%;
-`
-
-const MealType = styled.span`
-    background-color: ${props => props.theme.colors.main};
-    border-radius: 20px;
-    color: white; 
-    text-transform: lowercase;
-    font-size: 16px;
-    padding: 3px 10px;
-    text-align: center;
-`
-
-const NoImage = styled.div`
-    width: 300px;
-    height: 300px;
-    float: right;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    background-color: ${props => props.theme.colors.no_image_bg};
-    border-radius: 1rem;
-    margin: 0 0 30px 30px;
-`
-
-const StyledHeading = styled.h3`
-    font-size: 26px;
-    font-weight: 600; 
-`
+import { 
+    StyledReactMarkdown, 
+    StyledTitle,
+    StyledMealType,
+    StyledNoImage,
+    StyledHeading
+} from '@/components/StyledComponents';
+import ReicpeButtons from '@/components/RecipeButtons';
+import Loader from '@/components/Loader';
 
 function Recipe() {
     const router = useRouter();
     const { id } = router.query;
+
+    const [isLoaded, setIsLoaded] = useState(false);
 
     const [recipe, setRecipe] = useState(
         {
@@ -66,6 +34,7 @@ function Recipe() {
     useEffect(() => {
         if (id && id !== "") {
             fetchData()
+            setIsLoaded(true);
         }
     }, [id]);
     
@@ -80,61 +49,45 @@ function Recipe() {
 		}
 	};
 
-    async function deleteRecipe(id: number){
-		try{
-			const response = await axios.delete('/api/recipes?id=' + id);
-			if(response.status === 200)
-				router.push('/recipes');
-			else console.log('Error deleting recipe:', response.statusText);
-		} catch (error) {
-			console.error('Error deleting recipe:', error);
-		}
-	}
-
-	function editRecipe(id: number){
-		router.push('/recipes/edit/' + id);
-	}
+    function onUpdate() {
+        router.push('/recipes');
+    }
 
     return (
-        <div className='relative m-5 px-10 py-5 rounded-xl bg-white min-h-[500px]'>
+        <>
+            {isLoaded 
+                ? <div className='relative m-5 px-10 py-5 rounded-xl bg-white min-h-[500px] overflow-hidden'>
+                    <ReicpeButtons id={recipe.id} padding='20px 20px 0 0' onUpdate={onUpdate}/>
 
-            <div className='absolute flex gap-2 top-0 right-0 p-5 rounded-bl-xl border-slate-100'>
-                <button onClick={() => deleteRecipe(recipe.id)}><Delete/></button>
-                <button onClick={() => editRecipe(recipe.id)}><Edit/></button>
-                <button><Star/></button>
-            </div>	
+                    <StyledTitle>
+                        {recipe.title}
+                        {recipe.status !== 'NONE' &&<StyledMealType>{recipe.status}</StyledMealType>}
+                    </StyledTitle>   
 
-            <div className=''>
-                <Title>
-                    {recipe.title}
-                    {recipe.status !== 'NONE' &&<MealType>{recipe.status}</MealType>}
-                </Title>    
-            
-            </div>
+                    <div>
+                        <StyledNoImage>
+                            <Image/>
+                        </StyledNoImage>
 
-            <div>
-                <div>
-                    <NoImage>
-                        <Image/>
-                    </NoImage>
+                        <StyledHeading>Description</StyledHeading>
+                        <StyledReactMarkdown>
+                            {recipe.description}
+                        </StyledReactMarkdown>
 
-                    <StyledHeading>Description</StyledHeading>
-                    <StyledReactMarkdown>
-                        {recipe.description}
-                    </StyledReactMarkdown>
+                        <StyledHeading>Ingredients</StyledHeading>
+                        <StyledReactMarkdown>
+                            {recipe.ingredients}
+                        </StyledReactMarkdown>
 
-                    <StyledHeading>Ingredients</StyledHeading>
-                    <StyledReactMarkdown>
-                        {recipe.ingredients}
-                    </StyledReactMarkdown>
-
-                    <StyledHeading>Recipe</StyledHeading>
-                    <StyledReactMarkdown>
-                        {recipe.recipe}
-                    </StyledReactMarkdown>                        
+                        <StyledHeading>Recipe</StyledHeading>
+                        <StyledReactMarkdown>
+                            {recipe.recipe}
+                        </StyledReactMarkdown>                        
+                    </div>
                 </div>
-            </div>
-        </div>
+                : <Loader/>    
+            }
+        </>
     );
 }
 

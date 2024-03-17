@@ -1,5 +1,6 @@
 import React from 'react';
 import Nav from "./Nav";
+import { StyledLayout } from './StyledComponents';
 
 type ChildrenProps = {
     children: React.ReactNode;
@@ -9,9 +10,9 @@ function Layout({children} : ChildrenProps) {
     return (
         <>
             <Nav/>
-            <div className='p-6'>
+            <StyledLayout>
                 {children}
-            </div>
+            </StyledLayout>
         </>
     );
 }
